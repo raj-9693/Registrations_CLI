@@ -44,15 +44,13 @@ const RecreatePasswordScreen=()=> {
 
           {/* 2. Heading */}
           <Text style={styles.headingText}>
-            Sign in to your{'\n'}Account
+            Recreate Password
           </Text>
 
           {/* 3. Subtitle Row */}
           <View style={styles.subTitleRow}>
-            <Text style={styles.subTitleText}>Don't have an account? </Text>
-            <TouchableOpacity onPress={() => {/* SignUp Navigation */}}>
-              <Text style={styles.signUpLink}>Sign Up</Text>
-            </TouchableOpacity>
+            <Text style={styles.subTitleText}>Please enter a Strong new Password to secure your account </Text>
+           
           </View>
 
 
