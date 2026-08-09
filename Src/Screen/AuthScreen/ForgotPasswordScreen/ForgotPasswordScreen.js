@@ -58,7 +58,7 @@ const ForgotPasswordScreen=({navigation})=> {
             />
             <CustomButton 
             onPress={()=>navigation.navigate('Otp')}
-            title="Log In" />
+            title="Send Reset Link" />
 
               </View>
 
