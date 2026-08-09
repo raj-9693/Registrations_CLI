@@ -8,6 +8,7 @@ import { SignupScreen ,
            OTPScreen,
            ForgotPasswordScreen,
            RecreatePasswordScreen} from '../Screen/AuthScreen';
+           import PracticeUi from '../Screen/AuthScreen/PracticeUi/PracticeUi'
            
 
 const Stack = createNativeStackNavigator();
@@ -22,6 +23,7 @@ const AuthNavigation = () => {
 <Stack.Screen  name='ForgotPassword' component={ForgotPasswordScreen}></Stack.Screen>
 <Stack.Screen  name='Otp' component={OTPScreen}></Stack.Screen>
 <Stack.Screen  name='RecreatePassword' component={RecreatePasswordScreen}></Stack.Screen>
+<Stack.Screen  name='PracticeUi' component={PracticeUi}></Stack.Screen>
 
 
 </Stack.Navigator>

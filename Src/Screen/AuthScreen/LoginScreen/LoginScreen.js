@@ -22,7 +22,7 @@ const LoginScreen = ({navigation}) => {
 
   // 👈 FIX 1: Handler functions defined so app won't crash when passing to SocialButton
   const handleGoogleLogin = () => {
-    console.log('Google Login Pressed');
+    navigation.navigate('PracticeUi')
   };
 
   const handleFacebookLogin = () => {
