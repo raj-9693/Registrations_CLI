@@ -1,8 +1,9 @@
 import { View, Text, KeyboardAvoidingView, TouchableOpacity,
-  ImageBackground,Image,StyleSheet,ScrollView ,useWindowDimensions} from 'react-native'
+  ImageBackground,Image,ScrollView ,useWindowDimensions, Platform} from 'react-native'
 import React from 'react'
 import CustomButton from '../../../Components/CustomButton'
 import CustomInput from '../../../Components/CustomInput'
+import styles from './Styles'
 
 const ForgotPasswordScreen=({navigation})=> {
    
@@ -75,54 +76,4 @@ const ForgotPasswordScreen=({navigation})=> {
             </KeyboardAvoidingView>
   )
 }
-export default ForgotPasswordScreen; 
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f0f2f6',
-  },
-  Content: {
-    paddingHorizontal: 24,
-    paddingVertical: 24,
-    justifyContent: 'space-between',
-    flex: 1, 
-  },
-  logoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 26,
-  },
-  logoIcon: {
-    width: 18,
-    height: 18,
-  },
-  logoText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  headingText: {
-    color: '#FFFFFF',
-    fontSize: 32,
-    fontWeight: 'bold',
-    lineHeight: 36,
-    marginBottom: 14,
-  },
-   subTitleText: {
-    color: '#9CA3AF',
-    fontSize: 14,
-  },
-  BacktosignText:{
-    fontSize:18,
-    color: '#3B82F6',
-    fontWeight: '700',
-    
-  },
-  BacktosignDesion:{
-    alignItems:'center',
-    marginBottom:1,
-  }
-
-})
+export default ForgotPasswordScreen;

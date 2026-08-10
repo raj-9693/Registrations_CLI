@@ -1,11 +1,11 @@
 import { KeyboardAvoidingView, ScrollView,
-   StyleSheet, ImageBackground,useWindowDimensions,
+   ImageBackground,useWindowDimensions,
     Text,Image ,View,TouchableOpacity,Platform} from 'react-native'
   import { SafeAreaView } from 'react-native-safe-area-context';
 import React from 'react'
 import CustomButton from '../../../Components/CustomButton'
 import CustomInput from '../../../Components/CustomInput'
-import SocialButton from '../../../Components/SocialButton'
+import styles from './Styles'
 
 
 const SignupScreen=({navigation})=> {
@@ -112,60 +112,3 @@ const SignupScreen=({navigation})=> {
   )
 }
 export default SignupScreen;
-
-const styles = StyleSheet.create({
-
-   container: {
-    flexGrow:1,
-   
-  },
-  
-  Content: {
-    paddingHorizontal: 24,
-    paddingTop: 24,
-    flex:1,
-    
-  },
-   logoIcon: {
-    width: 18,
-    height: 18,
-    marginBottom: 26,
-  },
-   headingText: {
-    color: '#FFFFFF',
-    fontSize: 32,
-    fontWeight: 'bold',
-    lineHeight: 36,
-    marginBottom: 14,
-  },
-  headingText: {
-    color: '#FFFFFF',
-    fontSize: 32,
-    fontWeight: 'bold',
-    lineHeight: 36,
-    marginBottom: 14,
-  },
-  subTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  subTitleText: {
-    color: '#9CA3AF',
-    fontSize: 14,
-  },
-  signUpLink: {
-    color: '#3B82F6', 
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  CustomInputBox:{
-  width: '100%',
-    flexDirection:'row',
-    gap:12
-  },
-  buttonWrapper: {
-   
-    paddingHorizontal:24,
-  },
-
-})
