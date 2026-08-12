@@ -7,9 +7,22 @@ require('dotenv').config();
 
 // DB connection import करें
 const connectDB = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Routes
+app.use('/api/auth', authRoutes);
+
+// Test Route
+app.get('/', (req, res) => {
+  res.send('API is running and MongoDB connected!');
+});
 
 const startServer = async () => {
   await connectDB();
@@ -18,14 +31,5 @@ const startServer = async () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 };
-
-// Middleware
-app.use(cors());
-app.use(express.json());
-
-// Test Route
-app.get('/', (req, res) => {
-  res.send('API is running and MongoDB connected!');
-});
 
 startServer();
