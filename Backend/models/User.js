@@ -9,6 +9,8 @@ const userSchema = new mongoose.Schema({
    refreshToken: { type: String,select: false},
      resetPasswordOTP: { type: String, select: false}, // normal query me kabhi wapas nahi aayega },
     resetPasswordOTPExpiry: { type: Date,select: false, },
+ 
+
      
   }, { timestamps: true });
 

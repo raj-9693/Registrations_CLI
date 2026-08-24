@@ -2,15 +2,102 @@ import { Text, View,
   useWindowDimensions,Image,ImageBackground,TouchableOpacity,
   KeyboardAvoidingView,Platform,
   ScrollView} from 'react-native'
-  import CustomInput from '../../../Components/CustomInput';
-  import CustomButton from '../../../Components/CustomButton';
-  import  OTPInput  from '../../../Components/OTPInput';
-import React from 'react'
+  
+  import {CustomButton,OTPInput,CustomSnackbar} from '../../../Components';
+ 
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './Styles';
+import { ForgotPassword, OTP } from '../../../Api/AuthClients';
 
-const OTPScreen=({navigation})=>{
+
+const OTPScreen=({navigation,route})=>{
   const { width, height } = useWindowDimensions();
+  const {email}=route?.params || {}
+  const[Loading ,setLoading]=useState(false)
+  const [resendLoading, setResendLoading] = useState(false)
+  const [remainingSeconds, setRemainingSeconds] = useState(5 * 60)
+   const [otp, setOtp] = useState(''); 
+  const [snackbar, setSnackbar] = useState({
+    visible: false,
+    message: '',
+    type: 'success',
+    trigger: 0,
+  });
+
+  const showsnackbar = (message, type = 'success') => {
+    setSnackbar(prev => ({
+      visible: true,
+      message,
+      type,
+      trigger: (prev.trigger || 0) + 1,
+    }));
+  };
+
+  useEffect(() => {
+    if (remainingSeconds === 0) {
+      return undefined;
+    }
+
+    const timer = setInterval(() => {
+      setRemainingSeconds(seconds => Math.max(seconds - 1, 0))
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [remainingSeconds])
+
+  const formattedTime = `${String(Math.floor(remainingSeconds / 60)).padStart(2, '0')}:${String(remainingSeconds % 60).padStart(2, '0')}`
+
+  const handleResendCode = async () => {
+    if (resendLoading || !email) {
+      return;
+    }
+
+    setResendLoading(true)
+    try {
+      const response = await ForgotPassword({ email })
+      setRemainingSeconds(5 * 60)
+      showsnackbar(response.data?.message || 'A new OTP has been sent to your email')
+    } catch (err) {
+      const message = err.response?.data?.message || err.message || 'Unable to resend OTP.'
+      showsnackbar(message, 'error')
+      console.log('Resend OTP Error:', message)
+    } finally {
+      setResendLoading(false)
+    }
+  }
+
+
+  const handleOtp=async()=>{
+    if (remainingSeconds === 0) {
+      return showsnackbar('OTP has expired. Please resend a new code.', 'error')
+    }
+
+    if(!otp.trim()){
+      return showsnackbar('Place Enter 6-digit OTP !', 'error')
+    }
+
+   setLoading(true)
+   try{
+    const response= await OTP({otp,email})
+    if(response.data.success){
+       showsnackbar(response.data?.message )
+
+         setTimeout(() => {
+    navigation.navigate('RecreatePassword',{otp,email})
+  }, 2000);  
+}
+    
+    setLoading(false)
+     console.log(response.data.message)
+   }catch(err){
+    setLoading(false)
+    const message = err.response?.data?.message || err.message || 'Unable to verify OTP.'
+    showsnackbar(message, 'error')
+    console.log('OTP Error:', message)
+   }
+
+  }
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView 
@@ -68,10 +155,18 @@ const OTPScreen=({navigation})=>{
         <OTPInput 
        length={6}
        label="Verification Code"
-       onCodeFilled={(code) => console.log('Full code:', code)} 
+       onCodeFilled={(code) => setOtp(code)}  
+      
 />
-   <TouchableOpacity style={styles.ResendText}>
-    <Text style={styles.ResendLink}> Resend Code</Text>
+  <Text style={styles.timerText}>
+    {remainingSeconds > 0 ? `Code expires in ${formattedTime}` : 'Code expired'}
+  </Text>
+  <TouchableOpacity
+   style={styles.ResendText}
+   onPress={handleResendCode}
+   disabled={resendLoading}
+  >
+   <Text style={styles.ResendLink}>{resendLoading ? 'Sending...' : 'Resend Code'}</Text>
    </TouchableOpacity>
 
            
@@ -85,8 +180,22 @@ const OTPScreen=({navigation})=>{
              
         
              <CustomButton 
-            onPress={()=>navigation.navigate('RecreatePassword')}
-            title="Verify" />
+            onPress={handleOtp}
+            title="Verify"
+            isLoading={Loading}
+            disabled={Loading}
+             />
+
+             <CustomSnackbar
+               visible={snackbar.visible}
+               message={snackbar.message}
+               type={snackbar.type}
+               onDismiss={() => setSnackbar(prev => ({ ...prev, visible: false }))}
+               duration={3000}
+               trigger={snackbar.trigger}
+               bottomOffset={100}
+             />
+            
                <Text style={styles.disclaimerText}> Didn't receive the code?{' '}
                 
   <Text 

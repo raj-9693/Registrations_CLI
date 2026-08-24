@@ -57,6 +57,12 @@ export default StyleSheet.create({
     color: '#2563EB',
     fontWeight: '600',
   },
+  timerText: {
+    color: '#6B7280',
+    fontSize: 12,
+    textAlign: 'center',
+    marginBottom: 14,
+  },
   ResendText: {
     alignItems: 'center',
   },

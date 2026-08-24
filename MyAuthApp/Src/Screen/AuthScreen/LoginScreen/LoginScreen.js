@@ -7,19 +7,56 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   ScrollView,
-  Platform
+  Platform,
 } from 'react-native';
+
 import React, { useState } from 'react';
-import CustomInput from '../../../Components/CustomInput';
-import CustomButton from '../../../Components/CustomButton';
-import SocialButton from '../../../Components/SocialButton';
+import { Formik } from 'formik';
+import * as yup from 'yup';
+import {
+ CustomInput,
+  CustomButton,
+  SocialButton,
+  CustomSnackbar,
+  ErrorText,
+} from '../../../Components';
+
 import styles from './Styles';
+
+import { Login } from '../../../Api/AuthClients';
+
+
+// Validation Schema
+const loginValidationSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('Please enter a valid email')
+    .required('Email is required'),
+  password: yup
+    .string()
+    .min(6, 'Password must be at least 6 characters')
+    .required('Password is required'),
+});
 
 const LoginScreen = ({navigation}) => {
   const { width, height } = useWindowDimensions();
   const [rememberMe, setRememberMe] = useState(false);
 
-  // 👈 FIX 1: Handler functions defined so app won't crash when passing to SocialButton
+  // Snackbar 
+  const [snackbar, setSnackbar] = useState({visible:false, message:'',type:'success',trigger:0});
+     const showsnackbar=(message,type='success')=>{
+      setSnackbar(prev=>({
+      visible:true,
+      message,
+      type,
+      trigger: (prev.trigger || 0) +1,
+      }))
+     
+     }
+
+  
+
+
   const handleGoogleLogin = () => {
     console.log('Google Login Pressed');
   };
@@ -28,18 +65,44 @@ const LoginScreen = ({navigation}) => {
     console.log('Facebook Login Pressed');
   };
 
+  // Handle Login Submit
+const handleLoginSubmit = async (values ,{setisSubmitting}) => {
+    try {
+
+    const LoginPlayload={
+      email:values.email,
+      password:values.password
+    }
+    const response=await Login(LoginPlayload)
+    if(response.data.success){
+     showsnackbar(response.data?.message || 'Login Success')
+    }
+
+    } catch (error) {
+      const message=error.response?.data?.message || error.message || 'Login Failds'
+      console.log('Login Error:', error.response.data.message);
+      showsnackbar(message , 'error')
+      setisSubmitting(false)
+      
+      
+    }
+    finally{
+       setisSubmitting(false)
+    }
+  };
+
   return (
-    // 👈 KeyboardAvoidingView: कीबोर्ड खुलने पर इनपुट्स ऊपर खिसक जाएँगे
+    // 👈 KeyboardAvoidingView:
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      {/* 👈 ScrollView: छोटे फोन में स्क्रीन स्क्रॉल हो सकेगी */}
+    
       <ScrollView
         style={styles.container}
         bounces={false}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ flexGrow: 1 }} // 👈 स्क्रीन की पूरी हाइट बनाए रखने के लिए
+        contentContainerStyle={{ flexGrow: 1 }} 
       >
         {/* // Imagebackground-code */}
         <ImageBackground
@@ -77,92 +140,124 @@ const LoginScreen = ({navigation}) => {
         </ImageBackground>
 
         {/* ImageBackground ke Bad */}
-        <View style={styles.Content}>
-          <View>
-            {/* // EditInputComponents */}
-            <CustomInput
-              label="Email"
-              placeholder="Loisbecket@gmail.com"
-              keyboardType="email-address"
-            />
-            <CustomInput
-              label="password"
-              placeholder="Loisbecket@gmail.com"
-              keyboardType="email-address"
-              // secureTextEntry={true} // 👈 COMMENT: अगर पासवर्ड हिडन रखना हो तो इसे यूज़ कर सकते हैं
-            />
+        <Formik
+          initialValues={{
+            email: '',
+            password: '',
+          }}
+          validationSchema={loginValidationSchema}
+          onSubmit={handleLoginSubmit}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched,isSubmitting }) => (
+            <View style={styles.Content}>
+              <View>
+                {/* // EditInputComponents */}
+                <CustomInput
+                  label="Email"
+                  placeholder="Loisbecket@gmail.com"
+                  keyboardType="email-address"
+                  value={values.email}
+                  onChangeText={handleChange('email')}
+                  onBlur={handleBlur('email')}
+                />
+              <ErrorText error={errors.email} touched={touched.email}></ErrorText>
+                <CustomInput
+                  label="password"
+                  placeholder="Enter your password"
+                  keyboardType="default"
+                  secureTextEntry={true}
+                  value={values.password}
+                  onChangeText={handleChange('password')}
+                  onBlur={handleBlur('password')}
+                />
+               <ErrorText error={errors.password} touched={touched.password}></ErrorText>
 
-            {/* 👈 Remember me and Forgot Password Row */}
-            <View style={styles.rememberForgotRow}>
-              {/* Left Side: Checkbox + Remember me text */}
-              <TouchableOpacity
-                style={styles.rememberContainer}
-                onPress={() => setRememberMe(!rememberMe)}
-                activeOpacity={0.7}
-              >
-                <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
-                  {rememberMe && <Text style={styles.checkmark}>✓</Text>}
+                {/* 👈 Remember me and Forgot Password Row */}
+                <View style={styles.rememberForgotRow}>
+                  {/* Left Side: Checkbox + Remember me text */}
+                  <TouchableOpacity
+                    style={styles.rememberContainer}
+                    onPress={() => setRememberMe(!rememberMe)}
+                    activeOpacity={0.7}
+                  >
+                    <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
+                      {rememberMe && <Text style={styles.checkmark}>✓</Text>}
+                    </View>
+                    <Text style={styles.rememberText}>Remember me</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate('ForgotPassword')}
+                    activeOpacity={0.6}
+                  >
+                    <Text style={styles.forgotText}>Forgot Password ?</Text>
+                  </TouchableOpacity>
                 </View>
-                <Text style={styles.rememberText}>Remember me</Text>
-              </TouchableOpacity>
+                  
 
-              <TouchableOpacity
-                onPress={() => navigation.navigate('ForgotPassword')}
-                activeOpacity={0.6}
-              >
-                <Text style={styles.forgotText}>Forgot Password ?</Text>
-              </TouchableOpacity>
+                {/* //ButtonComponents */}
+                <CustomButton 
+                  onPress={handleSubmit}
+                  title="Log In"
+                  isLoading={isSubmitting}
+                  disabled={isSubmitting}
+                />
+
+                {/* //Divider with Text --------login---- */}
+                <View style={styles.dividerContainer}>
+                  <View style={styles.line} />
+                  <Text style={styles.dividerText}>Or login with</Text>
+                  <View style={styles.line} />
+                </View>
+
+                {/* // SocialButton Components */}
+                <View style={styles.socialRow}>
+    
+                  <SocialButton
+                    title="Google"
+                    icon={require('../../../Assets/Image/google.png')}
+                    onPress={handleGoogleLogin} 
+                  />
+
+                  <SocialButton
+                    title="Facebook"
+                    icon={require('../../../Assets/Image/2021_Facebook_icon.png')}
+                    onPress={handleFacebookLogin}
+                  />
+                </View>
+
+                {/* //TermsCondesion Text */}
+                <View style={styles.disclaimerContainer}>
+                  <Text style={styles.disclaimerText}>
+                    By signing up, you agree to the{' '}
+                    <Text 
+                      style={styles.boldText}
+                      onPress={() => console.log('Terms clicked')}
+                    >
+                      Terms of Service
+                    </Text>
+                    {' '}and{' '}
+                    <Text 
+                      style={styles.boldText}
+                      onPress={() => console.log('Data Processing clicked')}
+                    >
+                      Data Processing Agreement
+                    </Text>
+                  </Text>
+                </View>
+              </View>
             </View>
-
-            {/* //ButtonComponents */}
-            <CustomButton 
-            onPress={()=>navigation.navigate('Signup')}
-            title="Log In" />
-
-            {/* //Divider with Text --------login---- */}
-            <View style={styles.dividerContainer}>
-              <View style={styles.line} />
-              <Text style={styles.dividerText}>Or login with</Text>
-              <View style={styles.line} />
-            </View>
-
-            {/* // SocialButton Components */}
-            <View style={styles.socialRow}>
-              {/* 👈 FIX 2 & 3: onPress={() => handleGoogleLogin()} फंक्शन कॉल सही की गई */}
-              <SocialButton
-                title="Google"
-                icon={require('../../../Assets/Image/google.png')}
-                onPress={handleGoogleLogin} 
-              />
-
-              <SocialButton
-                title="Facebook"
-                icon={require('../../../Assets/Image/2021_Facebook_icon.png')}
-                onPress={handleFacebookLogin}
-              />
-            </View>
-          </View>
-
-          {/* //TermsCondesion Text */}
-          <View style={styles.disclaimerContainer}>
-            <Text style={styles.disclaimerText}>
-              By signing up, you agree to the{' '}
-              <Text 
-                style={styles.boldText}
-                onPress={() => console.log('Terms clicked')}
-              >
-                Terms of Service
-              </Text>
-              {' '}and{' '}
-              <Text 
-                style={styles.boldText}
-                onPress={() => console.log('Data Processing clicked')}
-              >
-                Data Processing Agreement
-              </Text>
-            </Text>
-          </View>
-        </View>
+          )}
+        </Formik>
+           
+                <CustomSnackbar
+                 visible={snackbar.visible}
+                 message={snackbar.message}
+                 type={snackbar.type}
+                 onDismiss={() => setSnackbar(prev => ({ ...prev, visible: false }))}
+                 duration={3000}
+                 trigger={snackbar.trigger}
+                  bottomOffset={100} />
       </ScrollView>
     </KeyboardAvoidingView>
   );

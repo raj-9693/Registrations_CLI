@@ -9,6 +9,7 @@ const CustomInput = ({
   secureTextEntry = false,
   keyboardType = 'default',
   autoCapitalize = 'none',
+  ...props // 👈 2. बाकी सारे props समेटने के लिए
 }) => {
   return (
     <View style={styles.container}>
@@ -26,6 +27,7 @@ const CustomInput = ({
           secureTextEntry={secureTextEntry}
           keyboardType={keyboardType}
           autoCapitalize={autoCapitalize}
+          {...props}
         />
       </View>
     </View>

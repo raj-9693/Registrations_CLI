@@ -48,7 +48,6 @@ const OTPInput = ({ length = 6, label = 'Verification Code', onCodeFilled }) => 
             keyboardType="number-pad"
             maxLength={1}
             selectionColor="#2F6BFF"
-            autoFocus={index === 0}
           />
         ))}
       </View>

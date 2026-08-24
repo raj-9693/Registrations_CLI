@@ -224,7 +224,7 @@ const forgotPassword = async (req, res) => {
     const hashedOTP = await bcrypt.hash(otp, 10);
 
     user.resetPasswordOTP = hashedOTP;
-    user.resetPasswordOTPExpiry = Date.now() + 10 * 60 * 1000; // 10 minute valid
+    user.resetPasswordOTPExpiry = Date.now() + 5 * 60 * 1000; // 10 minute valid
     await user.save();
 
     // Email bhejo OTP ke sath
@@ -236,7 +236,7 @@ const forgotPassword = async (req, res) => {
           <p>Hi ${user.firstName},</p>
           <p>Your OTP for password reset is:</p>
           <h2>${otp}</h2>
-          <p>This OTP is valid for 10 minutes. If you didn't request this, please ignore this email.</p>
+          <p>This OTP is valid for 5 minutes. If you didn't request this, please ignore this email.</p>
         `,
       });
     } catch (emailError) {
