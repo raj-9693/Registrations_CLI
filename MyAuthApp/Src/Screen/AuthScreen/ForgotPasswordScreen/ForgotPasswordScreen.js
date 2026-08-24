@@ -1,13 +1,64 @@
 import { View, Text, KeyboardAvoidingView, TouchableOpacity,
-  ImageBackground,Image,ScrollView ,useWindowDimensions, Platform} from 'react-native'
-import React from 'react'
-import CustomButton from '../../../Components/CustomButton'
-import CustomInput from '../../../Components/CustomInput'
+  ImageBackground,Image,ScrollView ,useWindowDimensions, Platform,
+  Alert} from 'react-native'
+import React, { useState } from 'react'
+
+import {CustomButton , CustomInput ,CustomSnackbar} from '../../../Components'
 import styles from './Styles'
+import { ForgotPassword } from '../../../Api/AuthClients'
 
 const ForgotPasswordScreen=({navigation})=> {
    
   const { width, height } = useWindowDimensions();
+  const[email,setemail]=useState('')
+  const[loading,setLoading]=useState(false)
+
+
+
+const handalForgatpassword=async()=>{
+  if(!email.trim()){
+    return  showsnackbar('email is requied !' , 'error')
+  }
+  setLoading(true)
+
+  try{
+    const response=await ForgotPassword({email})
+     if (response.data.success) {
+      showsnackbar(response.data?.message || 'OTP Send your Email')
+
+      setTimeout(() => {
+   navigation.navigate('Otp',{email})
+  }, 2000);   
+     
+    }
+
+    console.log(response.data.message)
+    console.log(response.status)
+    setLoading(false)
+    
+
+
+  }catch(error){
+    const message=error.response?.data?.message || error.message || 'Something went wrong. Please try again.'
+       showsnackbar(message, 'error')
+      setLoading(false)
+     console.log('Forgot Password Error:', message)
+    
+  }}
+
+
+// Snackbar 
+  const [snackbar, setSnackbar] = useState({visible:false, message:'',type:'success',trigger:0});
+     const showsnackbar=(message,type='success')=>{
+      setSnackbar(prev=>({
+      visible:true,
+      message,
+      type,
+      trigger: (prev.trigger || 0) +1,
+      }))
+     
+     }
+
   return (
      <KeyboardAvoidingView
           style={{ flex: 1 }}
@@ -56,22 +107,38 @@ const ForgotPasswordScreen=({navigation})=> {
               label="Email"
               placeholder="Loisbecket@gmail.com"
               keyboardType="email-address"
+              value={email}
+              onChangeText={setemail}
             />
             <CustomButton 
-            onPress={()=>navigation.navigate('Otp')}
-            title="Send Reset Link" />
+            onPress={handalForgatpassword}
+            title="Send Reset Link" 
+            isLoading={loading}
+            disabled={loading}
+            />
 
               </View>
-
-
+ 
+               
               <View>
-                <TouchableOpacity style={styles.BacktosignDesion}>
+
+                  
+                <TouchableOpacity style={styles.BacktosignDesion} onPress={()=>navigation.navigate('Otp')}>
                   <Text style={styles.BacktosignText}>Back to Sign In</Text>
                 </TouchableOpacity>
               </View>
 
             </View>
 
+
+                 <CustomSnackbar
+                 visible={snackbar.visible}
+                 message={snackbar.message}
+                 type={snackbar.type}
+                 onDismiss={() => setSnackbar(prev => ({ ...prev, visible: false }))}
+                 duration={3000}
+                 trigger={snackbar.trigger}
+                  bottomOffset={100} />
             </ScrollView>
             </KeyboardAvoidingView>
   )
