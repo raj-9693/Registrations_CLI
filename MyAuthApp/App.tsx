@@ -1,14 +1,16 @@
 import Router from './Src/Navigation/Router'
 import React from 'react';
+import { AuthProvider } from './Src/Context/AuthContext'
+import { NumberProviders } from './Src/Context/NumberContext'
 
-
-
-const App =()=> {
+const App = () => {
   return (
-    <Router/>
+    <AuthProvider>
+      <NumberProviders>
+        <Router />
+      </NumberProviders>
+    </AuthProvider>
   );
 }
-
-
 
 export default App;

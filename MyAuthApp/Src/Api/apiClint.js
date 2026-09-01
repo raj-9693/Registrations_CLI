@@ -1,6 +1,11 @@
 import axios from "axios" ;
 //172.20.110.90
 // 192.168.31.86
+// 10.245.19.90
+// 192.168.31.86
+// 10.245.19.90
+// 192.168.31.86
+//192.168.31.86
 const BASE_URL = 'http://192.168.31.86:5000'  // Base URL
 
 const apiClint=axios.create({

@@ -1,1 +1,5 @@
 export {default as HomeScreen} from './HomeScreen/HomeScreen'
+export{default as CardScreen} from './CardScreen/CardScreen'
+export{default as NoteScreen} from './NoteScreen/NoteScreen'
+export{default as AddNoteScreen} from './AddNoteScreen/AddNoteScreen'
+export{default as SettingScreen} from './SettingScreen/SettingScreen'

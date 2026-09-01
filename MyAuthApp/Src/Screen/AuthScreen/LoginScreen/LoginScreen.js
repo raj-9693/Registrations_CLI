@@ -24,6 +24,8 @@ import {
 import styles from './Styles';
 
 import { Login } from '../../../Api/AuthClients';
+import { useContext } from 'react';
+import {AuthContext} from '../../../Context/AuthContext'
 
 
 // Validation Schema
@@ -42,6 +44,10 @@ const LoginScreen = ({navigation}) => {
   const { width, height } = useWindowDimensions();
   const [rememberMe, setRememberMe] = useState(false);
 
+  const counterStates=useContext(AuthContext)
+  console.log("Context",counterStates)
+
+  const {login,setuserDeta} = useContext(AuthContext)
   // Snackbar 
   const [snackbar, setSnackbar] = useState({visible:false, message:'',type:'success',trigger:0});
      const showsnackbar=(message,type='success')=>{
@@ -74,6 +80,17 @@ const handleLoginSubmit = async (values ,{setisSubmitting}) => {
       password:values.password
     }
     const response=await Login(LoginPlayload)
+    const Token = response.data?.data?.accessToken;
+    console.log("Tocken",Token)
+    if(Token){
+      await login(Token)
+    } 
+
+    const MyDeta=response.data?.data
+    console.log( 'All deta',response.data?.data)
+    setuserDeta(MyDeta)
+
+    
     if(response.data.success){
      showsnackbar(response.data?.message || 'Login Success')
     }

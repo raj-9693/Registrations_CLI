@@ -10,6 +10,7 @@ import apiClint from "./apiClint";
 
 try{
     const response = await apiClint.post(EndPoint,AuthSignup)
+    console.log(`User_Id :${response.data?.user_id} `)
      console.log(`✅ [API SUCCESS] - Signup Successful |  Success :${response.data?.success} |Status: ${response.status} | message:${response.data?.message}`)
      console.log('📬 [RESPONSE DATA]', JSON.stringify(response.data, null, 2))
      console.log('All Response',response)
