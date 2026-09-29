@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import {HomeScreen, NoteScreen,AddNoteScreen} from '../../MainScreen'
+import {HomeScreen,AddNoteScreen,AllNotsScreen} from '../../MainScreen'
 
 const Tab = createBottomTabNavigator();
 
@@ -15,7 +15,7 @@ const BottomTabNavigator = () => {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="NoteAdd" component={AddNoteScreen} />
-      <Tab.Screen name="Notes" component={NoteScreen} />
+      <Tab.Screen name="AllNots" component={AllNotsScreen}/>
     </Tab.Navigator>
   );
 };

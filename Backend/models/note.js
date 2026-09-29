@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const noteSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  
+
   // 🟢 Checklist Tasks का Array
   todos: [
     {
@@ -17,7 +17,7 @@ const noteSchema = new mongoose.Schema({
   category_id: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Category',
-    required: true 
+    default: null
   },
   // user id
   user_id: { 
@@ -25,5 +25,6 @@ const noteSchema = new mongoose.Schema({
     ref: 'User', 
     required: true 
   }
-});
+}, { timestamps: true });
+
 module.exports = mongoose.model('nots', noteSchema); 

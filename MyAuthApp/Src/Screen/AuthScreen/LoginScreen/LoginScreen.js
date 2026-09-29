@@ -26,6 +26,7 @@ import styles from './Styles';
 import { Login } from '../../../Api/AuthClients';
 import { useContext } from 'react';
 import {AuthContext} from '../../../Context/AuthContext'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 // Validation Schema
@@ -85,10 +86,12 @@ const handleLoginSubmit = async (values ,{setisSubmitting}) => {
     if(Token){
       await login(Token)
     } 
-
     const MyDeta=response.data?.data
-    console.log( 'All deta',response.data?.data)
+    await AsyncStorage.setItem('userData', JSON.stringify(MyDeta));
     setuserDeta(MyDeta)
+
+    const UserId = MyDeta && MyDeta.id;
+    console.log('User ID:', UserId);
 
     
     if(response.data.success){

@@ -1,7 +1,7 @@
 
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { SettingScreen, CardScreen } from '../Screen/MainScreen'
+import { SettingScreen, CardScreen , NoteScreen, AddNoteScreen } from '../Screen/MainScreen'
 import BottTabNavigation from '../Screen/MainScreen/BottomTabNavigator/BottomTabNavigator'
 
 const Stack = createNativeStackNavigator();
@@ -13,7 +13,8 @@ const MainNavigation = () => {
             <Stack.Screen name='Main' component={BottTabNavigation} ></Stack.Screen>
              <Stack.Screen name='Card' component={CardScreen}></Stack.Screen>
              <Stack.Screen name='Setting' component={SettingScreen}></Stack.Screen>
-             
+             <Stack.Screen name='Note' component={NoteScreen}></Stack.Screen>
+            
             
         </Stack.Navigator>
    

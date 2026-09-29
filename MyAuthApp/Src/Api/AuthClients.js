@@ -37,7 +37,7 @@ try{
        console.log('📦 [PAYLOAD]', JSON.stringify(AuthLogin, null, 2))
        try{
         const response=await apiClint.post(Endpoints,AuthLogin)
-         console.log(`✅ [API SUCCESS] - Signup Successful |  Success:${response.data.success} | Status: ${response.status} message:${response.data?.message}`)
+         console.log(`✅ [API SUCCESS] - Signup Successful |  Success:${response.data.success} | Status: ${response.status} | message:${response.data?.message}`)
          console.log('📬 [RESPONSE DATA]', JSON.stringify(response.data, null, 2))
          console.log('All Response',response)
          return response

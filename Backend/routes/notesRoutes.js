@@ -5,6 +5,7 @@ const {
   getNotesByCategory,
   createNote,
   updateNote,
+  updateTodo,
   deleteNote,
   
 } = require('../controllers/notsController');
@@ -14,6 +15,7 @@ const { protect } = require('../middlewares/authMiddleware');
 router.get('/all', protect, getAllNotes);   // 👈 "protect" beech me daala  
 router.get('/:categoryId', getNotesByCategory);
 router.post('/', createNote);
+router.put('/:noteId/todos/:todoId', protect, updateTodo);
 router.put('/:id', updateNote);
 router.delete('/:id', deleteNote);
 

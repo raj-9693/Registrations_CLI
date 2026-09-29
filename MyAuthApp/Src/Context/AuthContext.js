@@ -15,8 +15,14 @@ export const AuthProvider = ({ children }) => {
     const checkToken = async () => {
       try {
         const savedToken = await AsyncStorage.getItem('userToken');
+        const savedUserData = await AsyncStorage.getItem('userData');
+
         if (savedToken) {
           setToken(savedToken);
+        }
+
+        if (savedUserData) {
+          setuserDeta(JSON.parse(savedUserData));
         }
       } catch (error) {
         console.error('Token fetch error:', error);
@@ -27,7 +33,6 @@ export const AuthProvider = ({ children }) => {
 
     checkToken();
   }, []);
-
   // Login Function (AsyncStorage + State दोनों में सेट करेगा)
   const login = async (newToken) => {
     try {
@@ -42,6 +47,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await AsyncStorage.removeItem('userToken');
+      await AsyncStorage.removeItem('userData');
       setToken(null);
       setuserDeta({}); // 👈 Logout par user data bhi empty kar dein
     } catch (error) {

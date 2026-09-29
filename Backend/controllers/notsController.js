@@ -5,13 +5,14 @@ const Note = require('../models/note');
 // Sabhi Notes nikalne ke liye (kisi bhi category ke ho, sirf apne User ke)
 const getAllNotes = async (req, res) => {
   try {
-    const notes = await Note.find({ user_id: req.user._id });   // Sirf apne, sab categories
-
+    const notes = await Note.find({ user_id: req.user._id }) 
+    .populate('category_id', 'category_name'); // Sirf apne, sab categories
     return res.status(200).json({
       success: true,
       message: 'All notes fetched successfully',
        user: req.user,
-       data: notes,
+       NotesDeta: notes,
+
     });
   } catch (error) {
     console.error('Get All Notes Error:', error);
@@ -34,6 +35,7 @@ const getNotesByCategory = async (req, res) => {
       success: true,
       message: 'Notes fetched successfully',
       data: notes,
+
     });
   } catch (error) {
     console.error('Get Notes By Category Error:', error);
@@ -86,6 +88,42 @@ const updateNote = async (req, res) => {
   }
 };
 
+const updateTodo = async (req, res) => {
+  try {
+    const note = await Note.findOne({
+      _id: req.params.noteId,
+      user_id: req.user._id,
+    });
+
+    if (!note) {
+      return res.status(404).json({ success: false, message: 'Note not found' });
+    }
+
+    const todo = note.todos.id(req.params.todoId);
+    if (!todo) {
+      return res.status(404).json({ success: false, message: 'Todo not found' });
+    }
+
+    if (typeof req.body.is_completed !== 'boolean') {
+      return res.status(400).json({
+        success: false,
+        message: 'is_completed must be a boolean',
+      });
+    }
+
+    todo.is_completed = req.body.is_completed;
+    await note.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Todo updated successfully',
+      data: todo,
+    });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+};
+
 const deleteNote = async (req, res) => {
   try {
     const deletedNote = await Note.findByIdAndDelete(req.params.id);
@@ -102,4 +140,4 @@ const deleteNote = async (req, res) => {
   }
 };
 
-module.exports = {getAllNotes, getNotesByCategory, createNote, updateNote, deleteNote };
+module.exports = { getAllNotes, getNotesByCategory, createNote, updateNote, updateTodo, deleteNote };

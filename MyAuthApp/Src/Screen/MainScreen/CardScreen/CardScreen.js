@@ -1,17 +1,14 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { useContext } from 'react'
-import {NumberContext} from '../../../Context/NumberContext'
+import { Text, View } from 'react-native'
+import React, { Component } from 'react'
 
-const CardScreen = () => {
-
-  const { count,Anser} = useContext(NumberContext)
-  return (
-    <View>
-      <Text>Number= {count}</Text>
-       <Text>Anser= {Anser}</Text>
-    </View>
-  )
+export class CardScreen extends Component {
+  render() {
+    return (
+      <View>
+        <Text>CardScreen</Text>
+      </View>
+    )
+  }
 }
 
 export default CardScreen

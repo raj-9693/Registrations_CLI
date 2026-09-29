@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "formik": "^2.4.9",
+    "react-native-svg": "^15.15.5",
+    "react-native-svg-transformer": "^1.5.3",
     "yup": "^1.7.1"
   }
 }
